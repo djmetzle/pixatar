@@ -2,6 +2,7 @@ use leptos::prelude::*;
 
 #[component]
 pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> impl IntoView {
+    let (hue, set_hue) = signal(1u32);
     let (orient, set_orient) = signal(1i32);
     let (bitorder, set_bitorder) = signal(1i32);
 
@@ -11,6 +12,23 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
         <input id="nameinput" type="text"
             bind:value=(string, set_string)
         />
+        </div>
+        <br/>
+        <hr/>
+
+        <div>
+        <h3>Choose a color</h3>
+        <input id="huepicker" type="range"
+            value={ move || hue.get() }
+            on:input:target=move |ev| set_hue.set(ev.target().value().parse().unwrap())
+            min=0
+            max=360
+        />
+            <div style:background-color=move || format!("hsl( {}, 100%, 50%)", hue.get())
+                style:width="64px"
+                style:height="64px"
+            >
+            </div>
         </div>
         <br/>
         <hr/>
@@ -64,6 +82,7 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
                 <label for="bitorderLSB">Least significant first</label>
             </div>
         </fieldset>
+
         <div>
             <p>Settings:</p>
             <pre>string: {string}</pre>
