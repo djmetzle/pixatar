@@ -8,13 +8,15 @@ use crate::settings::Settings;
 
 #[component]
 fn App() -> impl IntoView {
+    let (str, set_str) = signal("pixatar".to_string());
+
     view! {
         <h1>Pixatar</h1>
         <h3>Generate pixel art avatar images</h3>
         <hr/>
-        <Settings />
+        <Settings string=str set_string=set_str />
         <hr/>
-        <Generator />
+        <Generator string=str />
     }
 }
 

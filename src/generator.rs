@@ -28,9 +28,9 @@ fn get_png_bytes(str: &String) -> Vec<u8> {
             let char = raw_bytes[char_i];
             let bit_pos_x = char_i;
             let bit_pos_y = 1;
+            data.push(0);
             data.push(color_value(char, bit));
-            data.push(0);
-            data.push(0);
+            data.push(color_value(char, bit) >> 1);
             data.push(255);
         }
     }
@@ -64,18 +64,25 @@ fn generate_image(bytes: &mut Vec<u8>, str: &String) -> () {
     writer.write_image_data(&data).unwrap();
 }
 
-#[component]
-pub fn Generator() -> impl IntoView {
+fn get_data_url(string: String) -> String {
+    if string.is_empty() {
+        return String::from("");
+    }
     let mut bytes: Vec<u8> = Vec::new();
-    let str = String::from("djmetzle");
 
-    generate_image(&mut bytes, &str);
+    generate_image(&mut bytes, &string);
 
     let result = BASE64_STANDARD.encode(bytes);
     let data_url = String::from("data:image/png;base64,") + result.as_str();
 
+    return data_url;
+}
+
+#[component]
+pub fn Generator(string: ReadSignal<String>) -> impl IntoView {
     view! {
+        <p>string: {string}</p>
         <p>IMAGE</p>
-        <img height="auto" width=512 object-fit="contain" src={data_url} />
+        <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get())} />
     }
 }

@@ -1,16 +1,19 @@
 use leptos::prelude::*;
 
 #[component]
-pub fn Settings() -> impl IntoView {
-    let (string, set_string) = signal("".to_string());
-
+pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> impl IntoView {
     let (orient, set_orient) = signal(1i32);
     let (bitorder, set_bitorder) = signal(1i32);
 
     view! {
-        <input type="text"
+        <div>
+        <h3>Enter your username</h3>
+        <input id="nameinput" type="text"
             bind:value=(string, set_string)
         />
+        </div>
+        <br/>
+        <hr/>
 
         <fieldset>
             <legend>Select character layout direction</legend>
