@@ -1,7 +1,9 @@
 use leptos::prelude::*;
 
+mod generator;
 mod settings;
 
+use crate::generator::Generator;
 use crate::settings::Settings;
 
 #[component]
@@ -12,6 +14,7 @@ fn App() -> impl IntoView {
         <hr/>
         <Settings />
         <hr/>
+        <Generator />
     }
 }
 
