@@ -3,7 +3,7 @@ use std::io::BufWriter;
 
 use leptos::prelude::*;
 
-const SCALE: u32 = 1;
+const SCALE: u32 = 32;
 
 fn get_image_dimensions(str: &String) -> (u32, u32) {
     let raw_bytes = str.as_bytes();
@@ -24,14 +24,16 @@ fn get_png_bytes(str: &String) -> Vec<u8> {
     let mut data: Vec<u8> = Vec::new();
 
     for bit in 0..8 {
-        for char_i in 0..raw_bytes.len() {
-            let char = raw_bytes[char_i];
-            let bit_pos_x = char_i;
-            let bit_pos_y = 1;
-            data.push(0);
-            data.push(color_value(char, bit));
-            data.push(color_value(char, bit) >> 1);
-            data.push(255);
+        for _bit_i in 0..SCALE {
+            (0..raw_bytes.len()).for_each(|char_i| {
+                let char = raw_bytes[char_i];
+                for _char_i in 0..SCALE {
+                    data.push(0);
+                    data.push(color_value(char, bit));
+                    data.push(color_value(char, bit) >> 1);
+                    data.push(255);
+                }
+            });
         }
     }
 
