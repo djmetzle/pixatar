@@ -30,6 +30,32 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
             >
             </div>
         </div>
+
+        <fieldset>
+            <legend>Background color</legend>
+            <div>
+                <input type="radio"
+                    id="bgBlack"
+                    name="bg"
+                    checked
+                    on:change:target=move |_| {
+                        set_bg.set(1);
+                    }
+                    prop:value=move || bg.get().to_string()
+                />
+                <label for="bgBlack">Black</label>
+                <input type="radio"
+                    id="bgWhite"
+                    name="bg"
+                    on:change:target=move |_| {
+                        set_bg.set(2);
+                    }
+                    prop:value=move || bg.get().to_string()
+                />
+                <label for="bgWhite">White</label>
+            </div>
+        </fieldset>
+
         <br/>
         <hr/>
 
