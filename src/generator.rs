@@ -14,27 +14,34 @@ fn get_image_dimensions(str: &String) -> (u32, u32) {
     return (len * SCALE, 8 * SCALE);
 }
 
-fn color_value(char: u8, bit: u8) -> u8 {
+fn color_values(char: u8, bit: u8, hue: u32) -> (u8, u8, u8, u8) {
     let mask = 1 << bit;
     if char & mask > 0 {
-        return 255;
+        return (255, 5, 5, 5);
     }
-    return 0;
+    return (0, 5, 5, 5);
 }
 
 fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
     let raw_bytes = str.as_bytes();
     let mut data: Vec<u8> = Vec::new();
+    let hue = spec.hue;
+    let opacity = match spec.opacity {
+        Opacity::Solid => 255,
+        Opacity::Transparent => 0,
+    };
 
     for bit in 0..8 {
         for _bit_i in 0..SCALE {
             (0..raw_bytes.len()).for_each(|char_i| {
                 let char = raw_bytes[char_i];
                 for _char_i in 0..SCALE {
-                    data.push(0);
-                    data.push(color_value(char, bit));
-                    data.push(color_value(char, bit) >> 1);
-                    data.push(255);
+                    let (val, _, _, _) = color_values(char, bit, spec.hue);
+                    let alpha = if val > 0 { 255 } else { opacity };
+                    data.push((hue % 256) as u8);
+                    data.push(val);
+                    data.push(val >> 1);
+                    data.push(alpha);
                 }
             });
         }

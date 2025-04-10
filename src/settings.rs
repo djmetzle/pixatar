@@ -7,13 +7,13 @@ enum Background {
 }
 
 #[derive(Clone, Debug)]
-enum Opacity {
+pub enum Opacity {
     Solid,
     Transparent,
 }
 
 #[derive(Clone, Debug)]
-enum Orientation {
+pub enum Orientation {
     Vertical,
     Horizontal,
 }
@@ -26,9 +26,9 @@ enum Endian {
 
 #[derive(Clone, Debug)]
 pub struct Spec {
-    hue: u32,
+    pub hue: u32,
     bg: Background,
-    opacity: Opacity,
+    pub opacity: Opacity,
     orient: Orientation,
     ordering: Endian,
 }
