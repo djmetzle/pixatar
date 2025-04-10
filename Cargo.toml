@@ -5,6 +5,7 @@ edition = "2024"
 
 [dependencies]
 base64 = "0.22.1"
+colors-transform = "0.2.11"
 console_error_panic_hook = "0.1.7"
 leptos = { version = "0.7.8", features = ["csr"] }
 png = "0.17.16"
