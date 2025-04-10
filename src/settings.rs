@@ -1,62 +1,161 @@
 use leptos::prelude::*;
 
+#[derive(Clone, Debug)]
+enum Background {
+    Black,
+    White,
+}
+
+#[derive(Clone, Debug)]
+enum Opacity {
+    Solid,
+    Transparent,
+}
+
+#[derive(Clone, Debug)]
+enum Orientation {
+    Vertical,
+    Horizontal,
+}
+
+#[derive(Clone, Debug)]
+enum Endian {
+    Most,
+    Least,
+}
+
+#[derive(Clone, Debug)]
+struct Spec {
+    hue: u32,
+    bg: Background,
+    opacity: Opacity,
+    orient: Orientation,
+    ordering: Endian,
+}
+
+impl Spec {
+    fn new() -> Self {
+        return Self {
+            hue: 152u32,
+            bg: Background::White,
+            opacity: Opacity::Solid,
+            orient: Orientation::Horizontal,
+            ordering: Endian::Most,
+        };
+    }
+
+    fn with_bg(&self, bg: Background) -> Self {
+        return Self { bg, ..self.clone() };
+    }
+
+    fn with_hue(&self, hue: u32) -> Self {
+        return Self {
+            hue,
+            ..self.clone()
+        };
+    }
+
+    fn with_opacity(&self, opacity: Opacity) -> Self {
+        return Self {
+            opacity,
+            ..self.clone()
+        };
+    }
+
+    fn with_orient(&self, orient: Orientation) -> Self {
+        return Self {
+            orient,
+            ..self.clone()
+        };
+    }
+
+    fn with_ordering(&self, ordering: Endian) -> Self {
+        return Self {
+            ordering,
+            ..self.clone()
+        };
+    }
+}
+
 #[component]
 pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> impl IntoView {
-    let (hue, set_hue) = signal(1u32);
-    let (orient, set_orient) = signal(1i32);
-    let (bitorder, set_bitorder) = signal(1i32);
+    let (spec, set_spec) = signal(Spec::new());
 
     view! {
         <div>
-        <h3>Enter your username</h3>
-        <input id="nameinput" type="text"
-            bind:value=(string, set_string)
-        />
+            <h3>Enter your username</h3>
+            <input id="nameinput" type="text"
+                bind:value=(string, set_string)
+            />
         </div>
-        <br/>
+
         <hr/>
 
         <div>
-        <h3>Choose a color</h3>
-        <input id="huepicker" type="range"
-            value={ move || hue.get() }
-            on:input:target=move |ev| set_hue.set(ev.target().value().parse().unwrap())
-            min=0
-            max=360
-        />
-            <div style:background-color=move || format!("hsl( {}, 100%, 50%)", hue.get())
+            <h3>Choose a color</h3>
+            <input id="huepicker" type="range"
+                value={ spec.get().hue }
+                on:input:target=move |ev| {
+                    let val = ev.target().value().parse().unwrap();
+                    set_spec.set(spec.get().with_hue(val));
+                }
+                min=0
+                max=360
+            />
+            <div style:background-color=move || format!("hsl( {}, 100%, 50%)", spec.get().hue)
                 style:width="64px"
                 style:height="64px"
-            >
-            </div>
+            />
         </div>
+
+        <hr/>
 
         <fieldset>
             <legend>Background color</legend>
             <div>
                 <input type="radio"
-                    id="bgBlack"
+                    id="bgWhite"
                     name="bg"
                     checked
                     on:change:target=move |_| {
-                        set_bg.set(1);
+                        set_spec.set(spec.get().with_bg(Background::White));
                     }
-                    prop:value=move || bg.get().to_string()
-                />
-                <label for="bgBlack">Black</label>
-                <input type="radio"
-                    id="bgWhite"
-                    name="bg"
-                    on:change:target=move |_| {
-                        set_bg.set(2);
-                    }
-                    prop:value=move || bg.get().to_string()
                 />
                 <label for="bgWhite">White</label>
+                <input type="radio"
+                    id="bgBlack"
+                    name="bg"
+                    on:change:target=move |_| {
+                        set_spec.set(spec.get().with_bg(Background::Black));
+                    }
+                />
+                <label for="bgBlack">Black</label>
             </div>
         </fieldset>
 
-        <br/>
+        <fieldset>
+            <legend>Transparent</legend>
+            <div>
+                <input type="radio"
+                    id="opacitySolid"
+                    name="opacity"
+                    checked
+                    on:change:target=move |_| {
+                        set_spec.set(spec.get().with_opacity(Opacity::Solid));
+                    }
+                />
+                <label for="bgBlack">Solid</label>
+                <input type="radio"
+                    id="opacityTransparent"
+                    name="opacity"
+                    on:change:target=move |_| {
+                        set_spec.set(spec.get().with_opacity(Opacity::Transparent));
+                    }
+                />
+                <label for="opacityTransparent">Transparent</label>
+            </div>
+        </fieldset>
+
         <hr/>
 
         <fieldset>
@@ -67,18 +166,16 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
                     name="orientation"
                     checked
                     on:change:target=move |_| {
-                        set_orient.set(1);
+                        set_spec.set(spec.get().with_orient(Orientation::Horizontal));
                     }
-                    prop:value=move || orient.get().to_string()
                 />
                 <label for="orientationHorizontal">Horizontal</label>
                 <input type="radio"
                     id="orientationVertical"
                     name="orientation"
                     on:change:target=move |_| {
-                        set_orient.set(2);
+                        set_spec.set(spec.get().with_orient(Orientation::Vertical));
                     }
-                    prop:value=move || orient.get().to_string()
                 />
                 <label for="orientationVertical">Vertical</label>
             </div>
@@ -92,18 +189,16 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
                     name="bitorder"
                     checked
                     on:change:target=move |_| {
-                        set_bitorder.set(1);
+                        set_spec.set(spec.get().with_ordering(Endian::Most));
                     }
-                    prop:value=move || bitorder.get().to_string()
                 />
                 <label for="bitorderMSB">Most significant first</label>
                 <input type="radio"
                     id="bitorderLSB"
                     name="bitorder"
                     on:change:target=move |_| {
-                        set_bitorder.set(2);
+                        set_spec.set(spec.get().with_ordering(Endian::Least));
                     }
-                    prop:value=move || bitorder.get().to_string()
                 />
                 <label for="bitorderLSB">Least significant first</label>
             </div>
@@ -111,9 +206,7 @@ pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> 
 
         <div>
             <p>Settings:</p>
-            <pre>string: {string}</pre>
-            <pre>orientation: {orient}</pre>
-            <pre>bitorder: {bitorder}</pre>
+            <pre>{ move || format!("{:?}", spec.get()) }</pre>
         </div>
     }
 }
