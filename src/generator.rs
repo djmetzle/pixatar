@@ -3,6 +3,9 @@ use std::io::BufWriter;
 
 use leptos::prelude::*;
 
+use colors_transform::{Color, Hsl};
+
+use crate::settings::Background;
 use crate::settings::Opacity;
 use crate::settings::Spec;
 
@@ -14,18 +17,26 @@ fn get_image_dimensions(str: &String) -> (u32, u32) {
     return (len * SCALE, 8 * SCALE);
 }
 
-fn color_values(char: u8, bit: u8, hue: u32) -> (u8, u8, u8, u8) {
+fn pixel_bytes(char: u8, bit: u8, color: &Hsl, bg: u8, opacity: u8) -> (u8, u8, u8, u8) {
+    let r = color.get_red() as u8;
+    let g = color.get_green() as u8;
+    let b = color.get_blue() as u8;
     let mask = 1 << bit;
     if char & mask > 0 {
-        return (255, 5, 5, 5);
+        return (r, g, b, 255);
     }
-    return (0, 5, 5, 5);
+    return (bg, bg, bg, opacity);
 }
 
 fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
     let raw_bytes = str.as_bytes();
     let mut data: Vec<u8> = Vec::new();
     let hue = spec.hue;
+    let color = Hsl::from(hue as f32, 100.0, 50.0);
+    let background: u8 = match spec.bg {
+        Background::Black => 0,
+        Background::White => 255,
+    };
     let opacity = match spec.opacity {
         Opacity::Solid => 255,
         Opacity::Transparent => 0,
@@ -36,12 +47,11 @@ fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
             (0..raw_bytes.len()).for_each(|char_i| {
                 let char = raw_bytes[char_i];
                 for _char_i in 0..SCALE {
-                    let (val, _, _, _) = color_values(char, bit, spec.hue);
-                    let alpha = if val > 0 { 255 } else { opacity };
-                    data.push((hue % 256) as u8);
-                    data.push(val);
-                    data.push(val >> 1);
-                    data.push(alpha);
+                    let (r, g, b, a) = pixel_bytes(char, bit, &color, background, opacity);
+                    data.push(r);
+                    data.push(g);
+                    data.push(b);
+                    data.push(a);
                 }
             });
         }
@@ -95,6 +105,8 @@ pub fn Generator(string: ReadSignal<String>, spec: ReadSignal<Spec>) -> impl Int
     view! {
         <p>string: {string}</p>
         <p>IMAGE</p>
-        <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
+        <div style:padding="1em">
+            <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
+        </div>
     }
 }

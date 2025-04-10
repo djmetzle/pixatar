@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 
 #[derive(Clone, Debug)]
-enum Background {
+pub enum Background {
     Black,
     White,
 }
@@ -27,7 +27,7 @@ enum Endian {
 #[derive(Clone, Debug)]
 pub struct Spec {
     pub hue: u32,
-    bg: Background,
+    pub bg: Background,
     pub opacity: Opacity,
     orient: Orientation,
     ordering: Endian,
@@ -97,7 +97,6 @@ pub fn Settings(
         <div>
             <h3>Choose a color</h3>
             <input id="huepicker" type="range"
-                value={ spec.get().hue }
                 on:input:target=move |ev| {
                     let val = ev.target().value().parse().unwrap();
                     set_spec.set(spec.get().with_hue(val));
