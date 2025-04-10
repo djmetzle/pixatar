@@ -88,6 +88,7 @@ pub fn Settings(
         <div>
             <h3>Enter your username</h3>
             <input id="nameinput" type="text"
+                style:font-size="2em"
                 bind:value=(string, set_string)
             />
         </div>
@@ -124,6 +125,7 @@ pub fn Settings(
                     }
                 />
                 <label for="bgWhite">White</label>
+                <br/>
                 <input type="radio"
                     id="bgBlack"
                     name="bg"
@@ -137,7 +139,7 @@ pub fn Settings(
         </fieldset>
 
         <fieldset>
-            <legend>Transparent</legend>
+            <legend>Transparency</legend>
             <div>
                 <input type="radio"
                     id="opacitySolid"
@@ -148,6 +150,7 @@ pub fn Settings(
                     }
                 />
                 <label for="bgBlack">Solid</label>
+                <br/>
                 <input type="radio"
                     id="opacityTransparent"
                     name="opacity"
@@ -173,6 +176,7 @@ pub fn Settings(
                     }
                 />
                 <label for="orientationHorizontal">Horizontal</label>
+                <br/>
                 <input type="radio"
                     id="orientationVertical"
                     name="orientation"
@@ -196,6 +200,7 @@ pub fn Settings(
                     }
                 />
                 <label for="bitorderMSB">Most significant first</label>
+                <br/>
                 <input type="radio"
                     id="bitorderLSB"
                     name="bitorder"
@@ -206,10 +211,5 @@ pub fn Settings(
                 <label for="bitorderLSB">Least significant first</label>
             </div>
         </fieldset>
-
-        <div>
-            <p>Settings:</p>
-            <pre>{ move || format!("{:?}", spec.get()) }</pre>
-        </div>
     }
 }
