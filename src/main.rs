@@ -18,7 +18,7 @@ fn App() -> impl IntoView {
         <hr/>
         <Settings string=str set_string=set_str spec=spec set_spec=set_spec />
         <hr/>
-        <Generator string=str />
+        <Generator string=str spec=spec />
     }
 }
 

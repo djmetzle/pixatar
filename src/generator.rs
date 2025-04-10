@@ -3,6 +3,9 @@ use std::io::BufWriter;
 
 use leptos::prelude::*;
 
+use crate::settings::Opacity;
+use crate::settings::Spec;
+
 const SCALE: u32 = 32;
 
 fn get_image_dimensions(str: &String) -> (u32, u32) {
@@ -19,7 +22,7 @@ fn color_value(char: u8, bit: u8) -> u8 {
     return 0;
 }
 
-fn get_png_bytes(str: &String) -> Vec<u8> {
+fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
     let raw_bytes = str.as_bytes();
     let mut data: Vec<u8> = Vec::new();
 
@@ -40,7 +43,7 @@ fn get_png_bytes(str: &String) -> Vec<u8> {
     return Vec::from(data);
 }
 
-fn generate_image(bytes: &mut Vec<u8>, str: &String) -> () {
+fn generate_image(bytes: &mut Vec<u8>, str: &String, spec: &Spec) -> () {
     let stream = BufWriter::new(bytes);
 
     let (width, height) = get_image_dimensions(str);
@@ -61,18 +64,18 @@ fn generate_image(bytes: &mut Vec<u8>, str: &String) -> () {
 
     let mut writer = encoder.write_header().unwrap();
 
-    let data = get_png_bytes(str);
+    let data = get_png_bytes(str, spec);
 
     writer.write_image_data(&data).unwrap();
 }
 
-fn get_data_url(string: String) -> String {
+fn get_data_url(string: String, spec: Spec) -> String {
     if string.is_empty() {
         return String::from("");
     }
     let mut bytes: Vec<u8> = Vec::new();
 
-    generate_image(&mut bytes, &string);
+    generate_image(&mut bytes, &string, &spec);
 
     let result = BASE64_STANDARD.encode(bytes);
     let data_url = String::from("data:image/png;base64,") + result.as_str();
@@ -81,10 +84,10 @@ fn get_data_url(string: String) -> String {
 }
 
 #[component]
-pub fn Generator(string: ReadSignal<String>) -> impl IntoView {
+pub fn Generator(string: ReadSignal<String>, spec: ReadSignal<Spec>) -> impl IntoView {
     view! {
         <p>string: {string}</p>
         <p>IMAGE</p>
-        <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get())} />
+        <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
     }
 }
