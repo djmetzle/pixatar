@@ -25,7 +25,7 @@ enum Endian {
 }
 
 #[derive(Clone, Debug)]
-struct Spec {
+pub struct Spec {
     hue: u32,
     bg: Background,
     opacity: Opacity,
@@ -34,7 +34,7 @@ struct Spec {
 }
 
 impl Spec {
-    fn new() -> Self {
+    pub fn new() -> Self {
         return Self {
             hue: 152u32,
             bg: Background::White,
@@ -78,9 +78,12 @@ impl Spec {
 }
 
 #[component]
-pub fn Settings(string: ReadSignal<String>, set_string: WriteSignal<String>) -> impl IntoView {
-    let (spec, set_spec) = signal(Spec::new());
-
+pub fn Settings(
+    string: ReadSignal<String>,
+    set_string: WriteSignal<String>,
+    spec: ReadSignal<Spec>,
+    set_spec: WriteSignal<Spec>,
+) -> impl IntoView {
     view! {
         <div>
             <h3>Enter your username</h3>
