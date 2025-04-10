@@ -37,7 +37,7 @@ impl Spec {
     pub fn new() -> Self {
         return Self {
             hue: 152u32,
-            bg: Background::White,
+            bg: Background::Black,
             opacity: Opacity::Solid,
             orient: Orientation::Horizontal,
             ordering: Endian::Most,
@@ -103,6 +103,7 @@ pub fn Settings(
                 }
                 min=0
                 max=360
+                style:width="512px"
             />
             <div style:background-color=move || format!("hsl( {}, 100%, 50%)", spec.get().hue)
                 style:width="64px"
@@ -118,7 +119,6 @@ pub fn Settings(
                 <input type="radio"
                     id="bgWhite"
                     name="bg"
-                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_bg(Background::White));
                     }
@@ -127,6 +127,7 @@ pub fn Settings(
                 <input type="radio"
                     id="bgBlack"
                     name="bg"
+                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_bg(Background::Black));
                     }

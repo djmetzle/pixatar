@@ -104,9 +104,10 @@ fn get_data_url(string: String, spec: Spec) -> String {
 pub fn Generator(string: ReadSignal<String>, spec: ReadSignal<Spec>) -> impl IntoView {
     view! {
         <p>string: {string}</p>
-        <p>IMAGE</p>
-        <div style:padding="1em">
+        <p>Your Image:</p>
+        <div style:padding="1em" style:background="#777">
             <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
         </div>
+        <p>Right click and save to download...</p>
     }
 }
