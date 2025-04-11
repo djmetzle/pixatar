@@ -28,6 +28,34 @@ fn pixel_bytes(char: u8, bit: u8, color: &Hsl, bg: u8, opacity: u8) -> (u8, u8, 
     return (bg, bg, bg, opacity);
 }
 
+fn bit_values(str: &String) -> Vec<Vec<bool>> {
+    let mut chars: Vec<Vec<bool>> = Vec::new();
+    let raw_bytes = str.as_bytes();
+
+    (0..raw_bytes.len()).for_each(|char_i| {
+        let mut bits: Vec<bool> = Vec::new();
+        let char: u8 = raw_bytes[char_i];
+
+        (0..8).for_each(|bit| {
+            let mask: u8 = 1 << bit;
+            bits.push((char & mask) > 0);
+        });
+
+        chars.push(bits);
+    });
+
+    return chars;
+}
+
+#[test]
+fn test() {
+    let calced = bit_values(&String::from("z"));
+    assert_eq!(
+        vec![vec![false, true, false, true, true, true, true, false]],
+        calced
+    );
+}
+
 fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
     let raw_bytes = str.as_bytes();
     let mut data: Vec<u8> = Vec::new();
@@ -42,9 +70,13 @@ fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
         Opacity::Transparent => 0,
     };
 
-    for bit in 0..8 {
+    let columns = 0..8;
+    let bytes_len = raw_bytes.len();
+
+    columns.for_each(|bit| {
         for _bit_i in 0..SCALE {
-            (0..raw_bytes.len()).for_each(|char_i| {
+            let rows = 0..bytes_len;
+            rows.for_each(|char_i| {
                 let char = raw_bytes[char_i];
                 for _char_i in 0..SCALE {
                     let (r, g, b, a) = pixel_bytes(char, bit, &color, background, opacity);
@@ -55,9 +87,9 @@ fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
                 }
             });
         }
-    }
+    });
 
-    return Vec::from(data);
+    return data;
 }
 
 fn generate_image(bytes: &mut Vec<u8>, str: &String, spec: &Spec) -> () {
