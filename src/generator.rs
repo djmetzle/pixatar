@@ -11,6 +11,8 @@ use crate::settings::Spec;
 
 const SCALE: u32 = 32;
 
+mod bytes;
+
 fn get_image_dimensions(str: &String) -> (u32, u32) {
     let raw_bytes = str.as_bytes();
     let len = raw_bytes.len() as u32;
@@ -26,34 +28,6 @@ fn pixel_bytes(char: u8, bit: u8, color: &Hsl, bg: u8, opacity: u8) -> (u8, u8, 
         return (r, g, b, 255);
     }
     return (bg, bg, bg, opacity);
-}
-
-fn bit_values(str: &String) -> Vec<Vec<bool>> {
-    let mut chars: Vec<Vec<bool>> = Vec::new();
-    let raw_bytes = str.as_bytes();
-
-    (0..raw_bytes.len()).for_each(|char_i| {
-        let mut bits: Vec<bool> = Vec::new();
-        let char: u8 = raw_bytes[char_i];
-
-        (0..8).for_each(|bit| {
-            let mask: u8 = 1 << bit;
-            bits.push((char & mask) > 0);
-        });
-
-        chars.push(bits);
-    });
-
-    return chars;
-}
-
-#[test]
-fn test() {
-    let calced = bit_values(&String::from("z"));
-    assert_eq!(
-        vec![vec![false, true, false, true, true, true, true, false]],
-        calced
-    );
 }
 
 fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
@@ -123,6 +97,7 @@ fn get_data_url(string: String, spec: Spec) -> String {
         return String::from("");
     }
     let mut bytes: Vec<u8> = Vec::new();
+    let gen_bytes = bytes::Bytes::new(string.clone());
 
     generate_image(&mut bytes, &string, &spec);
 
