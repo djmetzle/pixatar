@@ -1,15 +1,31 @@
+use crate::settings::{Endian, Orientation};
+
 pub struct Bytes {
     string: String,
+    orientation: Orientation,
+    endian: Endian,
 }
 
 impl Bytes {
-    pub fn new(string: String) -> Self {
-        return Self { string };
+    pub fn new(string: String, orientation: &Orientation, endian: &Endian) -> Self {
+        return Self {
+            string,
+            orientation: orientation.clone(),
+            endian: endian.clone(),
+        };
     }
 
-    pub fn len(&self) -> u32 {
-        let raw_bytes = self.string.as_bytes();
-        return raw_bytes.len() as u32;
+    pub fn dimensions(&self) -> (u32, u32) {
+        let byte_length = self.string.as_bytes().len() as u32;
+        let w = match self.orientation {
+            Orientation::Horizontal => byte_length,
+            Orientation::Vertical => 8,
+        };
+        let h = match self.orientation {
+            Orientation::Horizontal => 8,
+            Orientation::Vertical => byte_length,
+        };
+        return (w, h);
     }
 
     fn bit_values(&self) -> Vec<Vec<bool>> {
@@ -35,13 +51,22 @@ impl Bytes {
 #[cfg(test)]
 mod bytes_tests {
     use super::Bytes;
+    use crate::settings::{Endian, Orientation};
 
     #[test]
     fn test_bits() {
-        let bytes = Bytes::new(String::from("z"));
+        let bytes = Bytes::new(String::from("z"), &Orientation::Vertical, &Endian::Most);
         assert_eq!(
             vec![vec![false, true, false, true, true, true, true, false]],
             bytes.bit_values()
         );
+    }
+
+    #[test]
+    fn test_dimensions() {
+        let bytes = Bytes::new(String::from("abc"), &Orientation::Horizontal, &Endian::Most);
+        assert_eq!((3, 8), bytes.dimensions());
+        let bytes = Bytes::new(String::from("abc"), &Orientation::Vertical, &Endian::Most);
+        assert_eq!((8, 3), bytes.dimensions());
     }
 }

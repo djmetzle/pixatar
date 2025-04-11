@@ -97,7 +97,7 @@ fn get_data_url(string: String, spec: Spec) -> String {
         return String::from("");
     }
     let mut bytes: Vec<u8> = Vec::new();
-    let gen_bytes = bytes::Bytes::new(string.clone());
+    let gen_bytes = bytes::Bytes::new(string.clone(), &spec.orient, &spec.ordering);
 
     generate_image(&mut bytes, &string, &spec);
 

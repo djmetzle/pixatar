@@ -19,7 +19,7 @@ pub enum Orientation {
 }
 
 #[derive(Clone, Debug)]
-enum Endian {
+pub enum Endian {
     Most,
     Least,
 }
@@ -29,8 +29,8 @@ pub struct Spec {
     pub hue: u32,
     pub bg: Background,
     pub opacity: Opacity,
-    orient: Orientation,
-    ordering: Endian,
+    pub orient: Orientation,
+    pub ordering: Endian,
 }
 
 impl Spec {
