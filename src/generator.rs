@@ -66,10 +66,11 @@ fn get_png_bytes(str: &String, spec: &Spec) -> Vec<u8> {
     return data;
 }
 
-fn generate_image(bytes: &mut Vec<u8>, str: &String, spec: &Spec) -> () {
+fn generate_image(bytes: &mut Vec<u8>, str: &String, spec: &Spec, gen_bytes: bytes::Bytes) -> () {
     let stream = BufWriter::new(bytes);
 
-    let (width, height) = get_image_dimensions(str);
+    let (w, h) = gen_bytes.dimensions();
+    let (width, height) = (w * SCALE, h * SCALE);
 
     let mut encoder = png::Encoder::new(stream, width, height);
     encoder.set_color(png::ColorType::Rgba);
@@ -99,7 +100,7 @@ fn get_data_url(string: String, spec: Spec) -> String {
     let mut bytes: Vec<u8> = Vec::new();
     let gen_bytes = bytes::Bytes::new(string.clone(), &spec.orient, &spec.ordering);
 
-    generate_image(&mut bytes, &string, &spec);
+    generate_image(&mut bytes, &string, &spec, gen_bytes);
 
     let result = BASE64_STANDARD.encode(bytes);
     let data_url = String::from("data:image/png;base64,") + result.as_str();
