@@ -44,7 +44,7 @@ fn get_color_values(spec: &Spec) -> (PixelValues, PixelValues) {
     return (foreground, background);
 }
 
-fn get_png_bytes(str: &String, spec: &Spec, gen_bytes: bytes::Bytes) -> Vec<u8> {
+fn get_png_bytes(spec: &Spec, gen_bytes: bytes::Bytes) -> Vec<u8> {
     let mut data: Vec<u8> = Vec::new();
 
     let (foreground, background) = get_color_values(spec);
@@ -88,7 +88,7 @@ fn generate_image(bytes: &mut Vec<u8>, str: &String, spec: &Spec, gen_bytes: byt
 
     let mut writer = encoder.write_header().unwrap();
 
-    let data = get_png_bytes(str, spec, gen_bytes);
+    let data = get_png_bytes(spec, gen_bytes);
 
     writer.write_image_data(&data).unwrap();
 }
@@ -98,7 +98,7 @@ fn get_data_url(string: String, spec: Spec) -> String {
         return String::from("");
     }
     let mut bytes: Vec<u8> = Vec::new();
-    let mut gen_bytes = bytes::Bytes::new(string.clone(), &spec.orient, &spec.ordering);
+    let gen_bytes = bytes::Bytes::new(string.clone(), &spec.orient, &spec.ordering);
 
     generate_image(&mut bytes, &string, &spec, gen_bytes);
 
