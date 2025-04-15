@@ -149,7 +149,7 @@ pub fn Settings(
                         set_spec.set(spec.get().with_opacity(Opacity::Solid));
                     }
                 />
-                <label for="bgBlack">Solid</label>
+                <label for="opacitySolid">Solid</label>
                 <br/>
                 <input type="radio"
                     id="opacityTransparent"
