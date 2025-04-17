@@ -24,6 +24,8 @@ jobs:
         run: cargo build
 
       - name: Build
-        run: trunk build --release
+        run: |
+          cargo install trunk
+          trunk build --release
 
       - run: ls -lR dist
