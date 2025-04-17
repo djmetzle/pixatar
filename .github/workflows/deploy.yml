@@ -38,4 +38,14 @@ jobs:
           cargo install trunk
           trunk build --release
 
-      - run: ls -lR dist
+      - name: AWS login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-west-1
+          role-to-assume: arn:aws:iam::177613294657:role/pixatarDeploy
+
+      - name: Update site
+        run: aws --region us-west-1 s3 sync --delete ./dist s3://pixatar-djmetzle-io/
+
+      - name: Invalidate Cloudfront
+        run: aws cloudfront create-invalidation --distribution-id E1R22IYXB9TRJ1 --paths "/*"
