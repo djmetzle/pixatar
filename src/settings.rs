@@ -39,8 +39,8 @@ impl Spec {
             hue: 152u32,
             bg: Background::Black,
             opacity: Opacity::Solid,
-            orient: Orientation::Horizontal,
-            ordering: Endian::Most,
+            orient: Orientation::Vertical,
+            ordering: Endian::Least,
         };
     }
 
@@ -170,7 +170,6 @@ pub fn Settings(
                 <input type="radio"
                     id="orientationHorizontal"
                     name="orientation"
-                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_orient(Orientation::Horizontal));
                     }
@@ -180,6 +179,7 @@ pub fn Settings(
                 <input type="radio"
                     id="orientationVertical"
                     name="orientation"
+                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_orient(Orientation::Vertical));
                     }
@@ -194,7 +194,6 @@ pub fn Settings(
                 <input type="radio"
                     id="bitorderMSB"
                     name="bitorder"
-                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_ordering(Endian::Most));
                     }
@@ -204,6 +203,7 @@ pub fn Settings(
                 <input type="radio"
                     id="bitorderLSB"
                     name="bitorder"
+                    checked
                     on:change:target=move |_| {
                         set_spec.set(spec.get().with_ordering(Endian::Least));
                     }
