@@ -113,8 +113,8 @@ pub fn Generator(string: ReadSignal<String>, spec: ReadSignal<Spec>) -> impl Int
     view! {
         <h2>Your Image:</h2>
         <p>Right click and save to download...</p>
-        <div style:padding="1em" style:background="#777">
-            <img height=512 width="auto" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
+        <div class="output-area" style:padding="1em" style:background="#777">
+            <img id="outputImage" object-fit="contain" src={move || get_data_url(string.get(), spec.get())} />
         </div>
     }
 }

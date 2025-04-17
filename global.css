@@ -1,0 +1,149 @@
+/* reset */
+
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  line-height: 1.6;
+}
+
+ol,
+ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* styling */
+
+/* General Body Styling */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+  color: #333;
+}
+
+/* Heading Styling */
+h1 {
+  font-size: 2.5em;
+  color: #008040; /* A blue color */
+}
+
+h3 {
+  color: #444;
+  margin-bottom: 10px;
+}
+
+/* Control Group for the Slider */
+.control-group {
+  margin-bottom: 20px;
+  padding: 15px;
+  border-radius: 5px;
+}
+
+.control-group label {
+  display: block; /* Label on its own line */
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+/* Style the range input slider */
+#huepicker {
+  width: 80%; /* Make slider wider */
+  max-width: 400px; /* But not excessively wide */
+  cursor: pointer;
+  margin-bottom: 5px; /* Space below slider */
+}
+
+/* Fieldset Styling */
+fieldset {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px; /* Space between fieldsets */
+  background-color: #fff; /* White background for contrast */
+}
+
+/* Legend Styling */
+legend {
+  font-weight: bold;
+  color: #333;
+  padding: 0 10px; /* Add some padding around the legend text */
+  background-color: #f4f4f4; /* Match body background */
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+/* Styling for Radio Button containers */
+fieldset div {
+  margin-bottom: 8px; /* Space between radio options */
+}
+
+.selectgrid {
+  display: grid; /* Define the container as a grid */
+  grid-template-columns: 1fr 1fr; /* Create two equal-width columns */
+  gap: 20px; /* Add space (gutter) between grid items (both row and column) */
+  margin-bottom: 20px; /* Add some space below the entire grid */
+}
+
+.selectgrid > fieldset {
+  margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+  .fieldset-grid {
+    grid-template-columns: 1fr; /* Stack into a single column */
+  }
+}
+
+/* Radio Button and Label Alignment */
+input[type="radio"] {
+  margin-right: 5px;
+  vertical-align: middle; /* Align radio button with label text */
+}
+
+label {
+  cursor: pointer; /* Indicate labels are clickable */
+  vertical-align: middle;
+}
+
+/* Output Area Styling */
+.output-area {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #777;
+  border: 1px dashed #bbb;
+  text-align: center; /* Center the output image and heading */
+}
+
+/* Output Image Styling */
+#outputImage {
+  display: block; /* Make image a block element */
+  margin: 10px auto 0; /* Center image horizontally, add top margin */
+  width: auto; /* Ensure image is responsive */
+  height: 512px; /* Maintain aspect ratio */
+  background-color: #777; /* Background if image fails to load */
+}
