@@ -1,0 +1,10 @@
+{
+  "url": "https://pixatar.djmetzle.io/",
+  "kind": "site",
+  "indexing": "indexed",
+  "exceptions": {
+    "WEB-HEAD-3": "No meta description: the page's words are metz's own (a hand-written site), so it waits for metz's text.",
+    "WEB-SOC-1": "No og:description, for the same reason: it waits for metz's description; every other Open Graph tag is set.",
+    "WEB-SOC-2": "No twitter:description and no og:description to fall back to, for the same reason."
+  }
+}
