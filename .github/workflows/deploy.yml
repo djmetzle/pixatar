@@ -35,17 +35,30 @@ jobs:
       - name: Build
         run: |
           rustup target add wasm32-unknown-unknown
-          cargo install trunk
+          cargo install trunk --version 0.22.1 --locked
           trunk build --release
 
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: us-west-1
-          role-to-assume: arn:aws:iam::177613294657:role/pixatarDeploy
+          aws-region: us-west-2
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
 
       - name: Update site
-        run: aws --region us-west-1 s3 sync --delete ./dist s3://pixatar-djmetzle-io/
+        env:
+          SITE_BUCKET: ${{ vars.SITE_BUCKET }}
+        run: aws --region us-west-2 s3 sync --delete ./dist "s3://$SITE_BUCKET/"
+
+      - name: The manifest's type
+        env:
+          SITE_BUCKET: ${{ vars.SITE_BUCKET }}
+        run: |
+          if [ -f dist/manifest.webmanifest ]; then
+            aws --region us-west-2 s3 cp dist/manifest.webmanifest "s3://$SITE_BUCKET/manifest.webmanifest" --content-type application/manifest+json
+            test "$(aws --region us-west-2 s3api head-object --bucket "$SITE_BUCKET" --key manifest.webmanifest --query ContentType --output text)" = application/manifest+json
+          fi
 
       - name: Invalidate Cloudfront
-        run: aws cloudfront create-invalidation --distribution-id E1R22IYXB9TRJ1 --paths "/*"
+        env:
+          DISTRIBUTION_ID: ${{ vars.DISTRIBUTION_ID }}
+        run: aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "/*"
