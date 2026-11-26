@@ -30,6 +30,30 @@
     <link data-trunk rel="copy-file" href="sitemap.xml" />
     <link data-trunk rel="copy-file" href="404.html" />
     <link data-trunk rel="copy-dir" href="icons" />
+    <!-- Analytics (org, 2026-11-26): first-party Umami, from our own monitoring node, async. The inline
+         script is its data-before-send hook: the URL and referrer it records keep only the five utm_
+         parameters, and every other query parameter is dropped. -->
+    <script>
+    (function () {
+      var keep = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
+      var utmOnly = function (v) {
+        if (typeof v !== "string" || v === "") return v;
+        try {
+          var u = new URL(v, location.href), q = new URLSearchParams();
+          u.searchParams.forEach(function (value, name) { if (keep.indexOf(name) !== -1) q.append(name, value); });
+          u.search = q.toString();
+          return v.charAt(0) === "/" ? u.pathname + u.search + u.hash : u.toString();
+        } catch (e) { return v.split("?")[0]; }
+      };
+      window.umamiBeforeSend = function (type, payload) {
+        if (!payload) return payload;
+        payload.url = utmOnly(payload.url);
+        payload.referrer = utmOnly(payload.referrer);
+        return payload;
+      };
+    })();
+    </script>
+    <script async src="https://collect.monitoring.djmetzle.io/script.js" data-website-id="934e6e76-796e-4ea2-805c-116db418feda" data-domains="pixatar.djmetzle.io" data-before-send="umamiBeforeSend"></script>
   </head>
   <body></body>
 </html>
